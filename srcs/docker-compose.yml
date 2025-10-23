@@ -1,0 +1,29 @@
+services:
+  mariadb:
+    build: ./requirements/mariadb                                     # Point to the folder containing the Dockerfile
+    container_name: mariadb                                           # Name the container
+    image: mariadb                                                    # Name the image
+    restart: always                                                   # If the container crashes, always restart it
+    env_file: .env                                                    # Retrieve envs from specific env file
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - mariadb_data:/var/lib/mysql                                   # Create a persistent storage volume
+    networks:
+      - inception                                                     # Connect the container to a shared network
+
+volumes:
+  mariadb_data:
+    driver: local
+    name: mariadb_data                                                # The volume mariadb_data (outside the container) is connected to /var/lib/mysql (inside)
+
+networks:
+  inception:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
