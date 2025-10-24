@@ -13,13 +13,50 @@ services:
     networks:
       - inception                                                     # Connect the container to a shared network
 
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    image: wordpress
+    restart: always
+    env_file: .env
+    secrets:
+      - db_password
+      - db_root_password
+    depends_on:
+      - mariadb
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    image: nginx
+    restart: always
+    env_file: .env
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - inception
+
+
 volumes:
   mariadb_data:
     driver: local
     name: mariadb_data                                                # The volume mariadb_data (outside the container) is connected to /var/lib/mysql (inside)
 
+  wordpress_data:
+    driver: local
+    name: wordpress_data
+
 networks:
   inception:
+    name: srcs_inception
     driver: bridge
 
 secrets:
