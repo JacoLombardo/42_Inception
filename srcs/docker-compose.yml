@@ -1,3 +1,5 @@
+name: inception
+
 services:
   mariadb:
     build: ./requirements/mariadb                                     # Point to the folder containing the Dockerfile
@@ -47,16 +49,24 @@ services:
 
 volumes:
   mariadb_data:
+    name: mariadb_data
     driver: local
-    name: mariadb_data                                                # The volume mariadb_data (outside the container) is connected to /var/lib/mysql (inside)
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/jalombar/data/mariadb                        # The volume mariadb (outside the container) is connected to /var/lib/mysql (inside)                                              
 
   wordpress_data:
-    driver: local
     name: wordpress_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/jalombar/data/wordpress
 
 networks:
   inception:
-    name: srcs_inception
+    name: inception
     driver: bridge
 
 secrets:
