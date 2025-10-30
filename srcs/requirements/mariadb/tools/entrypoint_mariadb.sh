@@ -7,10 +7,7 @@ set -e
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
-# Allow MariaDB to have access to 
-#chown -R mysql:mysql /var/lib/mysql
-
-# Start MariaDB temporarily
+# Start MariaDB temporarily in the background
 mysqld_safe --datadir=/var/lib/mysql &
 
 # Wait for MariaDB to be ready to connect
@@ -19,6 +16,9 @@ until mysqladmin ping -h "localhost" --silent; do
 done
 
 echo "[MariaDB] Creating Database and User..."
+
+# Set root password
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$(cat ${MYSQL_ROOT_PASSWORD_FILE})';"
 # Create selected database if none exists
 mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
 # Create new user using provided password if none exists

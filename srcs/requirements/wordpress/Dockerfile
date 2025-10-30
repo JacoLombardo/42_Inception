@@ -34,5 +34,8 @@ RUN chmod +x /usr/local/bin/entrypoint_wordpress.sh
 # Tell Docker that this container listens on port 9000
 EXPOSE 9000
 
+# Healthcheck (every 30sec check if PHP-FPM is listening and responding)
+HEALTHCHECK CMD curl -fs http://127.0.0.1/status || exit 1
+
 # Tell Docker which command to run when the container starts
 ENTRYPOINT ["/usr/local/bin/entrypoint_wordpress.sh"]

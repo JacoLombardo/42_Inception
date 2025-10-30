@@ -15,5 +15,8 @@ RUN chmod +x /usr/local/bin/entrypoint_nginx.sh
 # Tell Docker that this container listens on port 443
 EXPOSE 443
 
+# Healthcheck (every 30sec check if NGINX is running)
+HEALTHCHECK CMD service nginx status || exit 1
+
 # Tell Docker which command to run when the container starts
 ENTRYPOINT ["/usr/local/bin/entrypoint_nginx.sh"]

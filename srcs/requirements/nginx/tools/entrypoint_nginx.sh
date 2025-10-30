@@ -21,5 +21,5 @@ fi
 
 echo "[NGINX] Starting the server..."
 
-# Start NGINX in the foreground (no infinite loop as per subject)  as the main process (PID 1)
+# Start NGINX in the foreground (no infinite loop as per subject) as the main process (PID 1)
 exec nginx -g "daemon off;"

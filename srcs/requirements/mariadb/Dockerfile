@@ -14,7 +14,7 @@ RUN chmod +x /usr/local/bin/entrypoint_mariadb.sh
 # Tell Docker that this container listens on port 3306
 EXPOSE 3306
 
-# Healthcheck (optional but good practice)
+# Healthcheck (every 30sec ping the database)
 HEALTHCHECK CMD mysqladmin ping -h localhost || exit 1
 
 # Tell Docker which command to run when the container starts
