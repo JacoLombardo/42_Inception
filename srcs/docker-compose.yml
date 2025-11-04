@@ -10,7 +10,6 @@ services:
     secrets:
       - db_password
       - db_root_password
-      - credentials
     volumes:
       - mariadb_data:/var/lib/mysql                                   # Create a persistent storage volume
     networks:
@@ -25,6 +24,7 @@ services:
     secrets:
       - db_password
       - db_root_password
+      - credentials
     depends_on:
       - mariadb
     volumes:
