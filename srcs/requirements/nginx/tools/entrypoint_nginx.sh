@@ -21,7 +21,6 @@ else
   echo "[NGINX] SSL certificate for ${DOMAIN_NAME} already exists"
 fi
 
-echo "[NGINX] Starting the server..."
-
 # Start NGINX in the foreground (no infinite loop as per subject) as the main process (PID 1)
+echo "[NGINX] Starting the server..."
 exec nginx -g "daemon off;"

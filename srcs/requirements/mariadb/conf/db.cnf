@@ -4,5 +4,3 @@ skip-networking = 0
 datadir = /var/lib/mysql
 socket = /var/run/mysqld/mysqld.sock
 user = mysql
-
-# This config ensures MariaDB can accept connections from other containers and store data in a persistent volume
