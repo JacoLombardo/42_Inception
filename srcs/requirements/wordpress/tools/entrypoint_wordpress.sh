@@ -54,7 +54,7 @@ else
 fi
 
 # Give MariaDB a moment to come up
-sleep 3
+sleep 4
 
 # Install WordPress if missing
 if ! wp core is-installed --allow-root >/dev/null 2>&1; then
@@ -84,7 +84,6 @@ fi
 # Ensure permissions
 chown -R www-data:www-data /var/www/html
 
-echo "[Wordpress] Starting php-fpm..."
-
 # Start PHP-FPM in foreground (no infinite loop as per subject) as the main process (PID 1)
+echo "[Wordpress] Starting php-fpm..."
 exec php-fpm8.2 -F

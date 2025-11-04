@@ -1,5 +1,4 @@
 
-
 Access on host machine:
 	ssh -X -p 2222 jalombar@127.0.0.1
 
@@ -39,3 +38,40 @@ Bind mount vs Volume:
 
 Docker with or without Docker Compose:
 	The containers are the same but Docker Compose just automates how they start and connect.
+
+
+
+Wordpress config:
+	[www]									Name of the PHP-FPM worker pool.
+	user = www-data							Runs PHP as the www-data user (same as Nginx).
+	group = www-data						Runs PHP with the www-data group.
+	listen = 9000							Port used by Nginx to talk to PHP-FPM.
+	listen.owner = www-data					Owner of the socket (mostly for Unix sockets).
+	listen.group = www-data					Group of the socket (same as above).
+	pm = dynamic							Dynamically manage PHP worker processes.
+	pm.max_children = 5						Max PHP processes running at once.
+	pm.start_servers = 2					Start this many workers initially.
+	pm.min_spare_servers = 1				Minimum idle workers to keep.
+	pm.max_spare_servers = 3				Maximum idle workers to keep.
+	pm.status_path = /status				Endpoint for health checks.
+
+MariaDB config:
+	[mysqld]								Starts the main MariaDB server section.
+	bind-address = 0.0.0.0					Allows connections from any network interface.
+	skip-networking = 0						Enables TCP networking (remote access).
+	datadir = /var/lib/mysql				Location of all database files.
+	socket = /var/run/mysqld/mysqld.sock	Local Unix socket for admin tools.
+	user = mysql							Runs the database process as the mysql user.
+
+NGINX config:
+	listen 443 ssl;							Listens on port 443 using HTTPS.
+	server_name ${DOMAIN_NAME};				Domain name of your site.
+	ssl_protocols TLSv1.2 TLSv1.3;			Only allow secure TLS versions (per subject).
+	ssl_certificate ...						Path to your SSL certificate.
+	ssl_certificate_key ...					Path to your private key.
+	root /var/www/html;						Points to the WordPress files directory.
+	index index.php index.html;				Default index files to serve.
+	location ~ \.php$ { ... }				Sends PHP files to the WordPress (PHP-FPM) container.
+	fastcgi_pass wordpress:9000;			Connects to PHP-FPM on port 9000.
+	location / { ... }						Serves static files (images, CSS, JS).
+	try_files $uri $uri/ =404;				Returns 404 if a file isn’t found.
