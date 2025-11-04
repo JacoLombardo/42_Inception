@@ -7,32 +7,37 @@ set -e
 mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
-# Start MariaDB temporarily in the background
-mysqld_safe --datadir=/var/lib/mysql &
+# Initialize database if not already present
+if [ ! -d "/var/lib/mysql/mysql" ]; then
+  echo "[MariaDB] Initialising Database..."
 
-# Wait for MariaDB to be ready to connect
-until mysqladmin ping -h "localhost" --silent; do
-  sleep 1
-done
+  # Start MariaDB temporarily in the background
+  mysqld_safe --datadir=/var/lib/mysql &
 
-echo "[MariaDB] Creating Database and User..."
+  # Wait for MariaDB to be ready to connect
+  until mysqladmin ping -h "localhost" --silent; do
+    sleep 1
+  done
 
-# Set root password
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$(cat ${MYSQL_ROOT_PASSWORD_FILE})';"
-# Create selected database if none exists
-mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
-# Create new user using provided password if none exists
-mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '$(cat ${MYSQL_PASSWORD_FILE})';"
-# Give that user full permissions
-mysql -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';"
-# Apply permission changes immediately
-mysql -e "FLUSH PRIVILEGES;"
+  echo "[MariaDB] Creating Database and User..."
 
-# Stop the temporary instance
-mysqladmin shutdown
+  # Set root password
+  mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '$(cat ${MYSQL_ROOT_PASSWORD_FILE})';"
+  # Create selected database if none exists
+  mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+  # Create new user using provided password if none exists
+  mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '$(cat ${MYSQL_PASSWORD_FILE})';"
+  # Give that user full permissions
+  mysql -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';"
+  # Apply permission changes immediately
+  mysql -e "FLUSH PRIVILEGES;"
 
-# Wait a moment to let it exit cleanly
-sleep 2
+  # Stop the temporary instance
+  mysqladmin shutdown
+
+  # Wait a moment to let it exit cleanly
+  sleep 2
+fi
 
 echo "[MariaDB] Starting the database..."
 

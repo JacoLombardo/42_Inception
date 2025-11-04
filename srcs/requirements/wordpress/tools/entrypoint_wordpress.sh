@@ -3,6 +3,20 @@
 # Make the script stop if any command fails
 set -e
 
+# Path to the credentials secret (mounted by Docker)
+CRED_FILE="/run/secrets/credentials"
+
+# Read key=value pairs and export them as environment variables
+if [ -f "$CRED_FILE" ]; then
+  echo "[WordPress] Loading credentials..."
+  set -a                     # Export automatically
+  source "$CRED_FILE"        # Load values from file
+  set +a
+else
+  echo "[WordPress] credentials.txt secret not found!"
+  exit 1
+fi
+
 # Move to the Wordpress working directory
 cd /var/www/html
 
@@ -44,8 +58,19 @@ if ! wp core is-installed --allow-root >/dev/null 2>&1; then
     --url="https://${DOMAIN_NAME}" \
     --title="${WORDPRESS_TITLE}" \
     --admin_user="${WORDPRESS_ADMIN_USER}" \
-    --admin_password="${WORDPRESS_ADMIN_PASSWORD}" \
+    --admin_password="${WP_ADMIN_PASSWORD}" \
     --admin_email="${WORDPRESS_ADMIN_EMAIL}"
+
+  # Create non-admin user "${WORDPRESS_USER}" with author role
+  if ! wp user get ${WORDPRESS_USER} --field=ID --allow-root >/dev/null 2>&1; then
+    echo "[Wordpress] Creating secondary user ${WORDPRESS_USER}..."
+    wp user create ${WORDPRESS_USER} ${WORDPRESS_USER_EMAIL} \
+      --role=author \
+      --user_pass="${WP_USER_PASSWORD}" \
+      --allow-root
+  fi
+
+  echo "[Wordpress] WordPress successfully installed with Supervisor (admin) and ${WORDPRESS_USER} (author)"
 fi
 
 # Ensure permissions

@@ -1,0 +1,41 @@
+
+
+Access on host machine:
+	ssh -X -p 2222 jalombar@127.0.0.1
+
+
+
+THEORY
+
+Network flow:
+	Browser -> NGINX (443 HTTPS) -> Wordpress (php-fpm on port 9000) -> MariaDB (database on port 3306).
+
+Kernel = the core of the operating system, it manages the hardware and runs all programs.
+Foreground = the process runs as the main job of the container (PID 1) so that if that process exits the container stops.
+Docker Container = a process running on the host with its own isolated filesystem, network and PID space.
+
+
+Docker:
+	lets you run small, isolated systems called containers from images.
+	
+	Image = blueprint of the container (immutable).
+	Container = running instance of the blueprint (mutable).
+	Volume = persistent data outside container FS.
+	Network = connects containers together so they can communicate by name, not by IP, and it keeps them isolated from the outside world.
+
+	Rule = one service per container.
+
+VM vs Container:
+	A VM runs a full operating system with its own kernel.
+	A Container shares the host's kernel, therefore it's lighter and faster.
+
+HTTS/TLS:
+	It encryps communication between the user and the server.
+	The server create a certificate and then exchange it with the browser to crete a secure encrypted tunnel.
+
+Bind mount vs Volume:
+	A Bind mount maps a specific host folder (like /home/login/data).
+	A Volume is managed by Docker.
+
+Docker with or without Docker Compose:
+	The containers are the same but Docker Compose just automates how they start and connect.
