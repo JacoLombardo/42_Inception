@@ -17,6 +17,8 @@ if [ ! -f "/etc/ssl/certs/${DOMAIN_NAME}.crt" ]; then
     -keyout /etc/ssl/private/${DOMAIN_NAME}.key \
     -out /etc/ssl/certs/${DOMAIN_NAME}.crt \
     -subj "/C=FR/ST=Paris/L=Paris/O=42/OU=Inception/CN=${DOMAIN_NAME}"
+else
+  echo "[NGINX] SSL certificate for ${DOMAIN_NAME} already exists"
 fi
 
 echo "[NGINX] Starting the server..."

@@ -26,6 +26,8 @@ if [ ! -f "wp-load.php" ]; then
   curl -s -O https://wordpress.org/latest.tar.gz
   tar -xzf latest.tar.gz --strip-components=1
   rm latest.tar.gz
+else
+  echo "[Wordpress] WordPress already present"
 fi
 
 # Configure wp-config.php if missing
@@ -37,6 +39,8 @@ if [ ! -f "wp-config.php" ]; then
   sed -i "s/username_here/${WORDPRESS_DB_USER}/" wp-config.php
   sed -i "s/password_here/$(cat ${WORDPRESS_DB_PASSWORD_FILE})/" wp-config.php
   sed -i "s/localhost/${WORDPRESS_DB_HOST}/" wp-config.php
+else
+  echo "[Wordpress] wp-config.php already exists"
 fi
 
 # Install wp-cli if missing
@@ -45,6 +49,8 @@ if ! command -v wp >/dev/null 2>&1; then
   curl -s -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
   chmod +x wp-cli.phar
   mv wp-cli.phar /usr/local/bin/wp
+else
+  echo "[Wordpress] wp-cli already installed"
 fi
 
 # Give MariaDB a moment to come up
@@ -71,6 +77,8 @@ if ! wp core is-installed --allow-root >/dev/null 2>&1; then
   fi
 
   echo "[Wordpress] WordPress successfully installed with Supervisor (admin) and ${WORDPRESS_USER} (author)"
+else
+  echo "[Wordpress] WordPress already installed"
 fi
 
 # Ensure permissions

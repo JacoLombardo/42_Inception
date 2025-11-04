@@ -8,7 +8,7 @@ mkdir -p /run/mysqld
 chown -R mysql:mysql /run/mysqld
 
 # Initialize database if not already present
-if [ ! -d "/var/lib/mysql/mysql" ]; then
+#if [ ! -d "/var/lib/mysql/mysql" ]; then
   echo "[MariaDB] Initialising Database..."
 
   # Start MariaDB temporarily in the background
@@ -37,7 +37,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 
   # Wait a moment to let it exit cleanly
   sleep 2
-fi
+#fi
 
 echo "[MariaDB] Starting the database..."
 
