@@ -1,6 +1,15 @@
+CODE
 
 Access on host machine:
 	ssh -X -p 2222 jalombar@127.0.0.1
+
+Access database on VM:
+	- docker exec -it mariadb bash
+	- mysql -u wp_user -p wordpress
+	- SHOW DATABASES;
+	- USE wordpress;
+	- SHOW TABLES;
+	- SELECT COUNT(*) FROM wp_users;
 
 
 
